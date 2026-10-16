@@ -82,6 +82,27 @@ input[type=date],input[type=time],input[type=datetime-local]{cursor:pointer;min-
 .wiz{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:10px;align-items:center;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,transparent,#060d14 38%)}
 .wiz .btn{flex:none;min-width:120px}.wmsg{flex:1;font-size:12px;color:#ff9a5c;text-align:center}.wiz .btn.lock{background:linear-gradient(120deg,#9a5a2a,#ff9a5c);color:#1a0d02}
 .shake{animation:shk .4s}@keyframes shk{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g2>*,.g3>*{min-width:0}
+input,select,textarea{font-size:16px}
+input[type=date],input[type=time],input[type=datetime-local]{-webkit-appearance:none;appearance:none;display:block;width:100%;min-width:0;max-width:100%;min-height:46px;text-align:left}
+input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
+.sn button{min-height:44px}.stp button{height:46px}.stp input{height:46px}.add{min-height:44px}.btn{min-height:48px}
+.mq .x{order:2}
+.total{flex-wrap:wrap;gap:4px 12px}
+@media(max-width:560px){
+ header h1{font-size:17px;letter-spacing:.07em}header{padding:18px 16px 14px}
+ .wrap{padding:14px 12px}
+ .mq{flex-wrap:wrap}.mq input{flex:1 1 55%}.mq .sn{order:3;width:100%}.mq .sn button{flex:1;font-size:13px;padding:9px 4px}
+ .btns{flex-wrap:wrap}.btns .btn{flex:1 1 140px}
+ .wiz{gap:8px;padding-left:12px;padding-right:12px}.wiz .btn{min-width:0;padding:12px 14px;font-size:14px}.wmsg{font-size:11px;line-height:1.2}
+ .st button{font-size:11px;padding:8px 0}.st .ic{font-size:20px}
+ .vh{grid-template-columns:minmax(0,1fr) 84px auto}
+ .crow .r1{flex-wrap:wrap}.crow .r1 select{flex:1 1 100%}.crow .r1>input{flex:1 1 100%}
+ .crow .r1 .stp{margin-right:auto}
+ .chk label{padding:11px 14px}
+ .pvi .sn{width:100%}
+}
+@media(max-width:360px){.g3{grid-template-columns:1fr}.st{grid-template-columns:repeat(2,1fr)}.st1 .b{width:22px;height:22px}}
 .hide{display:none}
 .prev{position:sticky;top:12px;align-self:start}
 pre{white-space:pre-wrap;word-break:break-word;font:13px/1.6 ui-monospace,Consolas,monospace;background:#050b11;color:#cfe3ef;border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 12px;max-height:62vh;overflow:auto}
@@ -116,11 +137,11 @@ pre{white-space:pre-wrap;word-break:break-word;font:13px/1.6 ui-monospace,Consol
 <div class="g2" style="margin-top:12px"><div><label>Volume (m³)</label><input id="dv" placeholder="254,919"></div><div><label>Peso (ton)</label><input id="dp" placeholder="212,697"></div></div></div>
 </section>
 
-<datalist id="empresas"><option value="Textil Nahas"><option value="Eurotextil"></datalist>
+<datalist id="empresas"><option value="Textil Nahas"><option value="Eurotextil"><option value="VCI"><option value="Alliance"><option value="Timbro"><option value="Comexport"><option value="Portmac"><option value="Allure"></datalist>
 <section data-t="Pátio">
 <div class="card"><h3>Blocos de granito recebidos</h3>
-<div class="g3"><div><label>Quanzhou (QNZH)</label><input type="number" min="0" id="qnzh" placeholder="0"></div><div><label>Hualien (HUA)</label><input type="number" min="0" id="hua" placeholder="0"></div><div><label>MDC</label><input type="number" min="0" id="mdc" placeholder="0"></div></div>
-<div class="total"><span>Total geral recebido (QNZH + HUA + MDC)</span><b id="tot">0</b></div>
+<div class="g3"><div><label>Quanzhou</label><input type="number" min="0" id="qnzh" placeholder="0"></div><div><label>Hualien</label><input type="number" min="0" id="hua" placeholder="0"></div><div><label>MDC</label><input type="number" min="0" id="mdc" placeholder="0"></div></div>
+<div class="total"><span>Total geral recebido</span><b id="tot">0</b></div>
 <div style="margin-top:12px"><label>Total no pátio (blocos na área)</label><input type="number" min="0" id="patio" placeholder="0"></div></div>
 <div class="card"><h3>Containers enviados</h3><label>Foram enviados containers neste turno?</label><div class="sn" id="qenv"><button class="s" onclick="setQ('env','sim')">Sim</button><button class="n" onclick="setQ('env','nao')">Não</button></div>
 <div id="boxenv" class="hide" style="margin-top:12px"><div id="cenv"></div><button class="add" onclick="addC('env')">+ empresa</button></div></div>
@@ -167,10 +188,10 @@ const dTxt=(d,h,leg)=>{if(!d&&leg){[d,h]=String(leg).split('T')}if(!d)return'';c
 const C1=el=>{const v=el.value;if(v&&v[0]!==v[0].toUpperCase()){const p=el.selectionStart;el.value=v[0].toUpperCase()+v.slice(1);try{el.setSelectionRange(p,p)}catch(e){}}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const blank=()=>({data:new Date().toISOString().slice(0,10),turma:'',envQ:'',recQ:'',vesQ:'',step:0,turno:'diurno',hi:'07:00',hf:'19:00',dv:'',dp:'',hua:'',qnzh:'',mdc:'',patio:'',sai:'',saiq:'',saisep:'',dc:'',dcq:'',dvp:null,dpp:null,patioPrev:null,patioManual:false,
- env:[{e:'',q:''}],rec:[{e:'',q:''}],pat:'',pier:'',ppat:'',ppier:'',ves:[],maq:[{n:'Empilhadeira EP 45-1',s:'operando'},{n:'Empilhadeira EP 45-2',s:'operando'},{n:'Empilhadeira EP 30-1',s:'operando'}]});
+ env:[{e:'',q:''}],rec:[{e:'',q:''}],pat:'',pier:'',ppat:'',ppier:'',ves:[],maq:[{n:'EP 45-1',s:'operando'},{n:'EP 45-2',s:'operando'},{n:'EP 30-1',s:'operando'}]});
 let D=blank();try{const s=localStorage.getItem('ps');if(s)D=Object.assign(blank(),JSON.parse(s))}catch(e){}
 const mk=n=>String(n||'').toLowerCase().replace(/empilhadeira|\s+/g,'');
-if(!Array.isArray(D.maq))D.maq=[];
+if(!Array.isArray(D.maq))D.maq=[];D.maq.forEach(x=>{x.n=String(x.n||'').replace(/^empilhadeira\s+/i,'')});
 {const seen=new Set(),out=[];blank().maq.forEach(m=>{const f=D.maq.find(x=>mk(x.n)==mk(m.n));out.push(f?{n:m.n,s:f.s||'operando'}:m);seen.add(mk(m.n))});
 D.maq.forEach(x=>{const k=mk(x.n);if(k&&!seen.has(k)){seen.add(k);out.push(x)}});D.maq=out}
 const save=()=>{try{localStorage.setItem('ps',JSON.stringify(D))}catch(e){}};
@@ -185,7 +206,7 @@ function setTurno(t,reset){D.turno=t;if(reset){D.hi=t=='diurno'?'07:00':'19:00';
 // containers
 function addC(k){rc();const r=$('c'+k).querySelectorAll('.row'),l=r[r.length-1];if(l)l.querySelector('input').focus()}
 function stp(k,i,d){D[k][i].q=Math.max(0,(parseInt(D[k][i].q)||0)+d);rc()}
-const EMP=['VCI','Eurotextil','Textil Nahas','Alliance'];
+const EMP=['VCI','Eurotextil','Textil Nahas','Alliance','Timbro','Comexport','Portmac','Allure'];
 function setE(k,i,v){const c=D[k][i];if(v=='__o'){c.o=true;c.e=''}else{c.o=false;c.e=v}rc()}
 function setT(i,v){D.rec[i].t=v;rc()}
 function rc(){['env','rec'].forEach(k=>{const l=D[k][D[k].length-1];if(!l||l.e.trim()||String(l.q).trim())D[k].push({e:'',q:'',t:'dtc',lib:'nao',proc:'Santos/SP'});
@@ -202,7 +223,7 @@ const MS=[['operando','Operando',''],['parada','Parada','parada'],['em manutenç
 function rm(){$('maq').innerHTML=D.maq.map((m,i)=>`<div class="mq"><span class="dot ${(MS.find(o=>o[0]==m.s)||MS[0])[2]}"></span><input value="${esc(m.n)}" placeholder="Máquina" oninput="D.maq[${i}].n=this.value;gen()"><div class="sn">${MS.map(o=>`<button class="${m.s==o[0]?'on s':''}" onclick="D.maq[${i}].s='${o[0]}';rm()">${o[1]}</button>`).join('')}</div><button class="x" onclick="D.maq.splice(${i},1);rm()">×</button></div>`).join('');gen()}
 // embarcações
 const ST=[['ratificado','🟡','Ratificado'],['atracado','⚓','Atracado'],['pendente','📝','Pendente'],['fechado','✅','Fechado']];
-function addV(){D.vesQ='sim';D.ves.push({n:'',v:'',s:'ratificado',prev:'',hora:'',bwe:'',ran:'',des:'',pd:'',ph:'',desd:'',desh:'',dhora:'',pend:'',psp:false,sara:false,fpsp:false,fsara:false});rv()}
+function addV(){D.vesQ='sim';D.ves.push({n:'',v:'',s:'ratificado',prev:'',hora:'',bwe:'',ran:'',des:'',pd:'',ph:'',desd:'',desh:'',dhora:'',dhd:'',pend:'',psp:false,sara:false,fpsp:false,fsara:false});rv()}
 const sn=(i,f,v)=>`<div class="sn"><button class="s ${v==='sim'?'on':''}" onclick="D.ves[${i}].${f}='sim';rv()">Sim</button><button class="n ${v==='nao'?'on':''}" onclick="D.ves[${i}].${f}='nao';rv()">Não</button></div>`;
 function vqUpdate(){[...$('vq').children].forEach(b=>b.classList.toggle('on',(b.classList.contains('s')?'sim':'nao')==D.vesQ));$('vbox').classList.toggle('hide',D.vesQ!=='sim')}
 function setV(v){if(v=='nao'&&D.ves.length&&!confirm('Remover as embarcações já lançadas?'))return;D.vesQ=v;if(v=='nao')D.ves=[];if(v=='sim'&&!D.ves.length)addV();else rv()}
@@ -215,7 +236,7 @@ ${x.s=='atracado'?`<label>Horário de atracação</label><input type="time" valu
 <div class="sub">Serviços executados?</div><div class="qa"><label>Embarque de materiais BWE</label>${sn(i,'bwe',x.bwe)}</div><div class="qa"><label>Embarque de rancho</label>${sn(i,'ran',x.ran)}</div>
 <div style="margin-top:10px"><label>Previsão de desatracação</label><div class="g2"><input type="date" value="${esc(x.desd||(x.des||'').split('T')[0]||'')}" onchange="D.ves[${i}].desd=this.value;gen()"><input type="time" value="${esc(x.desh||(x.des||'').split('T')[1]||'')}" onchange="D.ves[${i}].desh=this.value;gen()"></div></div>
 <div class="sub">Pendências (inclui documentação)</div><textarea rows="2" oninput="D.ves[${i}].pend=this.value;gen()">${esc(x.pend)}</textarea><div class="sub">Falta fechar</div><div class="chk"><label><input type="checkbox" ${x.fpsp?'checked':''} onchange="D.ves[${i}].fpsp=this.checked;gen()"> PSP</label><label><input type="checkbox" ${x.fsara?'checked':''} onchange="D.ves[${i}].fsara=this.checked;gen()"> SARA</label></div>`:''}
-${x.s=='pendente'?`<label>Desatracou às</label><input type="time" value="${esc(x.dhora||'')}" onchange="D.ves[${i}].dhora=this.value;gen()"><div class="sub">Falta fechar</div><div class="chk"><label><input type="checkbox" ${x.fpsp?'checked':''} onchange="D.ves[${i}].fpsp=this.checked;gen()"> PSP</label><label><input type="checkbox" ${x.fsara?'checked':''} onchange="D.ves[${i}].fsara=this.checked;gen()"> SARA</label></div><div class="sub">Pendências (inclui documentação)</div><textarea rows="2" oninput="D.ves[${i}].pend=this.value;gen()">${esc(x.pend)}</textarea>`:''}
+${x.s=='pendente'?`<label>Desatracou em</label><div class="g2"><input type="date" value="${esc(x.dhd||'')}" onchange="D.ves[${i}].dhd=this.value;gen()"><input type="time" value="${esc(x.dhora||'')}" onchange="D.ves[${i}].dhora=this.value;gen()"></div><div class="sub">Falta fechar</div><div class="chk"><label><input type="checkbox" ${x.fpsp?'checked':''} onchange="D.ves[${i}].fpsp=this.checked;gen()"> PSP</label><label><input type="checkbox" ${x.fsara?'checked':''} onchange="D.ves[${i}].fsara=this.checked;gen()"> SARA</label></div><div class="sub">Pendências (inclui documentação)</div><textarea rows="2" oninput="D.ves[${i}].pend=this.value;gen()">${esc(x.pend)}</textarea>`:''}
 ${x.s=='fechado'?`<div class="sub">Fechado em:</div><div class="chk"><label><input type="checkbox" ${x.psp?'checked':''} onchange="D.ves[${i}].psp=this.checked;gen()"> PSP</label><label><input type="checkbox" ${x.sara?'checked':''} onchange="D.ves[${i}].sara=this.checked;gen()"> SARA</label></div>`:''}
 </div>`).join('');gen()}
 // passagem anterior
@@ -228,7 +249,7 @@ const POS=/(embarcad|realizad|conclu|finaliz|feito|efetuad|\bsim\b|\bok\b)/i;
 const flag=c=>NEG.test(c)?'nao':POS.test(c)?'sim':'';
 function parseVes(t){
  const m=t.match(/^\W*(.+?)[,\s]+viagem\s*(?:n[º°o.]*\s*)?([\w\-\/]+)/i);if(!m)return null;
- const v={n:cap(clean(m[1]).replace(/^(navio|embarca[çc][ãa]o)\s+/i,'')),v:m[2].replace(/[,;.]+$/,''),s:'',prev:'',prevTxt:'',hora:'',bwe:'',ran:'',des:'',pd:'',ph:'',desd:'',desh:'',dhora:'',pend:'',psp:false,sara:false,fpsp:false,fsara:false};
+ const v={n:cap(clean(m[1]).replace(/^(navio|embarca[çc][ãa]o)\s+/i,'')),v:m[2].replace(/[,;.]+$/,''),s:'',prev:'',prevTxt:'',hora:'',bwe:'',ran:'',des:'',pd:'',ph:'',desd:'',desh:'',dhora:'',dhd:'',pend:'',psp:false,sara:false,fpsp:false,fsara:false};
  const yr=(D.data||'').slice(0,4)||String(new Date().getFullYear());
  const dt=re=>{const x=t.match(re);if(!x)return null;const y=x[3]?(x[3].length==2?'20'+x[3]:x[3]):yr;const h=x[4]?`${p2(x[4])}:${x[5]||'00'}`:'';
   return{d:`${y}-${p2(x[2])}-${p2(x[1])}`,h,txt:`${p2(x[1])}/${p2(x[2])}${h?' às '+h+'h':''}`}};
@@ -238,7 +259,7 @@ function parseVes(t){
  const hm=t.match(/(?<!des)atrac(?:ad[oa]|ou)[^0-9]{0,15}(\d{1,2})\s*[:h]\s*(\d{2})?/i);if(hm)v.hora=`${p2(hm[1])}:${hm[2]||'00'}`;
  const atr=/(?<!des)atrac(?:ad[oa]|ou)/i.test(t);
  const dp=/(?<!previs[ãa]o de )desatrac(?:ad[oa]|ou)/i.test(t);
- if(dp){v.desd='';v.desh='';const m2=t.match(/desatrac(?:ad[oa]|ou)[^0-9]{0,15}(\d{1,2})\s*[:h]\s*(\d{2})?/i);if(m2)v.dhora=`${p2(m2[1])}:${m2[2]||'00'}`;else if(ds&&ds.h)v.dhora=ds.h}
+ if(dp){if(ds)v.dhd=ds.d;v.desd='';v.desh='';const m2=t.match(/desatrac(?:ad[oa]|ou)[^0-9]{0,15}(\d{1,2})\s*[:h]\s*(\d{2})?/i);if(m2)v.dhora=`${p2(m2[1])}:${m2[2]||'00'}`;else if(ds&&ds.h)v.dhora=ds.h}
  let ctx='';const left=[];
  t.split(/[;.,]/).map(x=>x.trim()).filter(Boolean).forEach(c=>{const l=c.toLowerCase();
   if(l.includes(v.n.toLowerCase())||/viagem/.test(l)||/^(às|ás|as|em|dia|para)?\s*[\d\/:h\s]+$/i.test(l)){ctx='';return}
@@ -256,7 +277,7 @@ function parseVes(t){
  v.s=dp?((v.psp&&v.sara&&!v.fpsp&&!v.fsara&&!v.pend)?'fechado':'pendente'):(atr||v.fpsp||v.fsara)?'atracado':/ratificad/i.test(t)?'ratificado':(/fechad/i.test(t)&&(v.psp||v.sara))?'fechado':v.hora?'atracado':'ratificado';
  return v}
 function analisar(){
- const txt=$('prevtxt').value;if(!txt.trim())return;
+ const txt=$('prevtxt').value.replace(/porto\s+sem\s+papel/gi,'PSP');if(!txt.trim())return;
  const info=[];PV=[];let sec='',sub='';
  const hd=/^\*?\s*(SERVIÇOS PENDENTES|SERVIÇOS|ESTOQUE DE DIESEL|PÁTIO|PATIO|PIER|PÍER|MÁQUINAS|MAQUINAS)\s*[.:]?\s*\*?$/i;
  const rows=[];
@@ -276,7 +297,7 @@ function analisar(){
  items.forEach(it=>{const t=clean(it.t);if(!t)return;
   const v=it.sub=='pier'?parseVes(t):null;
   if(v){const k=nz(v.n)+'|'+nz(v.v),o=VES.get(k);
-   if(!o){v.srcs=[t];VES.set(k,v)}else{o.srcs.push(t);['pd','ph','prevTxt','hora','dhora','bwe','ran','desd','desh','pend'].forEach(f=>{if(!o[f]&&v[f])o[f]=v[f]});
+   if(!o){v.srcs=[t];VES.set(k,v)}else{o.srcs.push(t);['pd','ph','prevTxt','hora','dhora','dhd','bwe','ran','desd','desh','pend'].forEach(f=>{if(!o[f]&&v[f])o[f]=v[f]});
     ['psp','sara','fpsp','fsara'].forEach(f=>{o[f]=o[f]||v[f]});if(rank[v.s]>rank[o.s])o.s=v.s;if((o.fpsp||o.fsara)&&rank[o.s]<2)o.s='atracado'}return}
   if(it.sec=='pend'){if(!/^sem pend/i.test(t))other.push({kind:'item',src:'pend',k:it.sub,t,a:'manter',opts:['manter','concluido']});return}
   if(/^(foram|foi)\s+(enviad|recebid)/i.test(t)||/totalizando/i.test(t))return;
@@ -294,7 +315,7 @@ function analisar(){
  if(dv||dp){if(dv){D.dv=dv[1];$('dv').value=D.dv}if(dp){D.dp=dp[1];$('dp').value=D.dp}D.dvp=D.dv;D.dpp=D.dp;D.dc='nao';rd();info.push('Diesel repetido')}
  let nm=0;mq.forEach(l=>{const t=clean(l),m=t.match(/^(.*?)\s+(operando|parad[ao]|(?:em\s+)?manuten[çc][ãa]o)$/i);if(!m)return;
   const st=/^oper/i.test(m[2])?'operando':/^parad/i.test(m[2])?'parada':'em manutenção';const f=D.maq.find(x=>mk(x.n)==mk(m[1]));
-  if(f)f.s=st;else D.maq.push({n:m[1],s:st});nm++});
+  if(f)f.s=st;else D.maq.push({n:m[1].replace(/^empilhadeira\s+/i,''),s:st});nm++});
  if(nm){rm();info.push(`${nm} máquinas atualizadas`)}
  if(VES.size)info.push(`${VES.size} embarcação(ões) identificada(s)`);
  $('pvinfo').textContent=info.join(' · ')||'Nenhuma informação reconhecida.';$('pvinfo').classList.remove('hide');
@@ -307,7 +328,7 @@ function renderPV(){
  const btn=(i,x,o)=>`<button class="${OL[o][1]} ${x.a==o?'on':''}" onclick="PV[${i}].a='${o}';renderPV()">${OL[o][0]}</button>`;
  $('pvlist').innerHTML=PV.length?'<div class="sub">O que o app entendeu da passagem anterior</div>'+PV.map((x,i)=>{
   if(x.kind=='ves'){const c=[chp(SL[x.s],x.s=='fechado'?'g':x.s=='atracado'?'b':x.s=='pendente'?'o':'w')];
-   if(x.hora)c.push(chp('Atracou '+x.hora+'h'));if(x.dhora)c.push(chp('Desatracou '+x.dhora+'h'));if(x.prevTxt)c.push(chp('Previsão '+x.prevTxt+(x.ph?'':' (sem hora)')));
+   if(x.hora)c.push(chp('Atracou '+x.hora+'h'));if(x.dhora||x.dhd)c.push(chp('Desatracou '+(dTxt(x.dhd,x.dhora)||x.dhora+'h')));if(x.prevTxt)c.push(chp('Previsão '+x.prevTxt+(x.ph?'':' (sem hora)')));
    if(x.bwe)c.push(chp('BWE: '+(x.bwe=='sim'?'feito':'pendente'),x.bwe=='sim'?'g':'w'));if(x.ran)c.push(chp('Rancho: '+(x.ran=='sim'?'feito':'pendente'),x.ran=='sim'?'g':'w'));
    {const dd=dTxt(x.desd,x.desh,x.des);if(dd)c.push(chp('Desatracação '+dd))}if(x.psp||x.sara)c.push(chp('Fechado: '+[x.psp&&'PSP',x.sara&&'SARA'].filter(Boolean).join(' e '),'g'));
    if(x.fpsp||x.fsara)c.push(chp('Falta fechar: '+[x.fpsp&&'PSP',x.fsara&&'SARA'].filter(Boolean).join(' e '),'w'));if(x.pend)c.push(chp(x.pend,'w'));
@@ -321,7 +342,7 @@ function aplicarPV(){let kept=0,done=0;
  PV.forEach(x=>{
   if(x.kind=='ves'){const c=x.a=='concluido',r=x.s=='ratificado';let s=x.s,psp=x.psp,sara=x.sara,fp=x.fpsp,fs=x.fsara;
    if(c){if(r)s='atracado';else{s='fechado';psp=psp||fp;sara=sara||fs;fp=fs=false}}
-   const card={n:x.n,v:x.v,s,prev:'',pd:c&&r?'':x.pd,ph:c&&r?'':x.ph,hora:c&&r?'':x.hora,bwe:c&&r?'':x.bwe,ran:c&&r?'':x.ran,des:'',desd:c&&r?'':x.desd,desh:c&&r?'':x.desh,pend:x.pend,dhora:x.dhora||'',psp,sara,fpsp:fp,fsara:fs};
+   const card={n:x.n,v:x.v,s,prev:'',pd:c&&r?'':x.pd,ph:c&&r?'':x.ph,hora:c&&r?'':x.hora,bwe:c&&r?'':x.bwe,ran:c&&r?'':x.ran,des:'',desd:c&&r?'':x.desd,desh:c&&r?'':x.desh,pend:x.pend,dhora:x.dhora||'',dhd:x.dhd||'',psp,sara,fpsp:fp,fsara:fs};
    const f=D.ves.findIndex(z=>nz(z.n)==nz(x.n)&&nz(z.v)==nz(x.v));D.vesQ='sim';if(f>=0)D.ves[f]=card;else D.ves.push(card);c?done++:kept++;return}
   if(x.a=='ignorar')return;
   if(x.a=='concluido'){addLine(x.k,'Concluído: '+clean(x.t));done++;return}
@@ -377,9 +398,9 @@ function gen(){save();
   if(x.bwe)pt.push(`embarque de materiais BWE: ${x.bwe=='sim'?'sim':'não'}`);if(x.ran)pt.push(`embarque de rancho: ${x.ran=='sim'?'sim':'não'}`);
   {const dd=dTxt(x.desd,x.desh,x.des);if(dd)pt.push(`previsão de desatracação ${dd}`)}if(f)pt.push(`falta fechar no ${f}`);if(x.pend.trim())pt.push(lc(x.pend));
   L.push(`*${vn(x)}, ${pt.join('; ')}.`)});
- D.ves.filter(x=>x.s=='pendente').forEach(x=>{const f=[x.fpsp&&'PSP',x.fsara&&'SARA'].filter(Boolean).join(' e '),pt=[`desatracado${x.dhora?' às '+x.dhora+'h':''}`];if(f)pt.push(`falta fechar no ${f}`);if(x.pend.trim())pt.push(lc(x.pend));L.push(`*${vn(x)}, ${pt.join('; ')}.`)});
+ D.ves.filter(x=>x.s=='pendente').forEach(x=>{const f=[x.fpsp&&'PSP',x.fsara&&'SARA'].filter(Boolean).join(' e '),pt=[(()=>{const dd=dTxt(x.dhd,x.dhora);return 'desatracado'+(dd?' em '+dd:(x.dhora?' às '+x.dhora+'h':''))})()];if(f)pt.push(`falta fechar no ${f}`);if(x.pend.trim())pt.push(lc(x.pend));L.push(`*${vn(x)}, ${pt.join('; ')}.`)});
  if(L.length==pidx)L.push('*Sem pendências.');
- const mq=D.maq.filter(m=>m.n.trim());if(mq.length){L.push('','*MÁQUINAS:*',...mq.map(m=>`-${cap(m.n)} ${m.s};`))}
+ const mq=D.maq.filter(m=>m.n.trim());if(mq.length){L.push('','*MÁQUINAS:*',...mq.map(m=>`-${/^ep\s*\d/i.test(m.n.trim())?'Empilhadeira '+m.n.trim().toUpperCase():cap(m.n)} ${m.s};`))}
  const seen=new Set(),O=L.filter(l=>{if(!(l.startsWith('*')&&!l.endsWith('*'))||/^\*sem pend/i.test(l))return true;const k=nz(l);if(seen.has(k))return false;seen.add(k);return true});
  $('out').textContent=O.join('\n');iss()}
 async function copiar(force){if(ISS.length&&force!==true){avisar(()=>copiar(true));return}
@@ -415,7 +436,7 @@ function iss(){const a=[],n=v=>parseInt(v)||0,ne=v=>String(v||'').trim()!=='',P=
    if(x.s=='ratificado'&&!x.pd&&!x.prev)P(nm+': previsão de atracação','ves',3);
    if(x.s=='atracado'){if(!x.hora)P(nm+': hora de atracação','ves',3);if(!x.bwe)P(nm+': embarque de materiais BWE','ves',3);if(!x.ran)P(nm+': embarque de rancho','ves',3);if(!x.desd&&!x.des)P(nm+': previsão de desatracação','ves',3)}
    if(x.s=='fechado'&&!x.psp&&!x.sara)P(nm+': fechado em qual (PSP e/ou SARA)?','ves',3);
-   if(x.s=='pendente'){if(!x.dhora)P(nm+': hora de desatracação','ves',3);if(!x.fpsp&&!x.fsara&&!(x.pend||'').trim())P(nm+': o que está pendente?','ves',3)}})}
+   if(x.s=='pendente'){if(!x.dhd||!x.dhora)P(nm+': data e hora de desatracação','ves',3);if(!x.fpsp&&!x.fsara&&!(x.pend||'').trim())P(nm+': o que está pendente?','ves',3)}})}
  ISS=a;
  $('iss').innerHTML=a.length?`<h3><span>Falta preencher</span><span class="n">${a.length}</span></h3><div class="il">${grp(a,'')}</div>`:'<div class="ok">✓ Tudo preenchido</div>';
  const bd=$('badge');bd.textContent=a.length?a.length+' a preencher':'✓ completo';bd.classList.toggle('ok',!a.length);
